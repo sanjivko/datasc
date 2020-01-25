@@ -1,0 +1,292 @@
+Reading and Writing XML Files in Python
+========================================
+
+The XML Modules
+=================
+The minidom, or Minimal DOM Implementation, is a simplified implementation of the Document Object Model (DOM). 
+
+The DOM is an application programming interface that treats XML as a tree structure, where each node in the tree is an object. Thus, the use of this module requires that we are familiar with its functionality.
+
+The ElementTree module provides a more "Pythonic" interface to handling XMl and is a good option for those not familiar with the DOM. 
+
+
+
+XML File Example
+In the examples below, we will be using the following XML file, which we will save as "items.xml":
+
+
+<data>  
+    <items>
+        <item name="item1">item1abc</item>
+        <item name="item2">item2abc</item>
+    </items>
+</data>  
+
+
+Reading XML Documents
+
+Using minidom
+
+In order to parse an XML document using minidom, we must first import it from the xml.dom module. This module uses the parse function to create a DOM object from our XML file. The parse function has the following syntax:
+
+
+xml.dom.minidom.parse(filename_or_file[, parser[, bufsize]])  
+
+
+Here the file name can be a string containing the file path or a file-type object. The function returns a document, which can be handled as an XML type. Thus, we can use the function getElementByTagName() to find a specific tag.
+
+Since each node can be treated as an object, we can access the attributes and text of an element using the properties of the object. In the example below, we have accessed the attributes and text of a specific node, and of all nodes together.
+
+
+from xml.dom import minidom
+
+# parse an xml file by name
+mydoc = minidom.parse('items.xml')
+
+items = mydoc.getElementsByTagName('item')
+
+# one specific item attribute
+print('Item #2 attribute:')  
+print(items[1].attributes['name'].value)
+
+# all item attributes
+print('\nAll attributes:')  
+for elem in items:  
+    print(elem.attributes['name'].value)
+
+# one specific item's data
+print('\nItem #2 data:')  
+print(items[1].firstChild.data)  
+print(items[1].childNodes[0].data)
+
+# all items data
+print('\nAll item data:')  
+x`
+
+If we wanted to use an already-opened file, can just pass our file object to parse like so:
+
+datasource = open('items.xml')
+
+# parse an open file
+mydoc = parse(datasource)  
+Also, if the XML data was already loaded as a string then we could have used the parseString() function instead.
+
+
+Using ElementTree
+
+ElementTree presents us with an very simple way to process XML files. As always, in order to use it we must first import the module. In our code we use the import command with the as keyword, which allows us to use a simplified name (ET in this case) for the module in the code.
+
+Following the import, we create a tree structure with the parse function, and we obtain its root element. Once we have access to the root node we can easily traverse around the tree, because a tree is a connected graph.
+
+Using ElementTree, and like the previous code example, we obtain the node attributes and text using the objects related to each node.
+
+The code is as follows:
+
+import xml.etree.ElementTree as ET  
+tree = ET.parse('items.xml')  
+root = tree.getroot()
+
+# one specific item attribute
+print('Item #2 attribute:')  
+print(root[0][1].attrib)
+
+# all item attributes
+print('\nAll attributes:')  
+for elem in root:  
+    for subelem in elem:
+        print(subelem.attrib)
+
+# one specific item's data
+print('\nItem #2 data:')  
+print(root[0][1].text)
+
+# all items data
+print('\nAll item data:')  
+for elem in root:  
+    for subelem in elem:
+        print(subelem.text)
+The result will be as follows:
+
+$ python treeparser.py 
+Item #2 attribute:  
+item2
+
+All attributes:  
+item1  
+item2
+
+Item #2 data:  
+item2abc
+
+All item data:  
+item1abc  
+item2abc  
+Figure 2
+
+As you can see, this is very similar to the minidom example. One of the main differences is that the attrib object is simply a dictionary object, which makes it a bit more compatible with other Python code. We also don't need to use value to access the item's attribute value like we did before.
+
+You may have noticed how accessing objects and attributes with ElementTree is a bit more Pythonic, as we mentioned before. This is because the XML data is parsed as simple lists and dictionaries, unlike with minidom where the items are parsed as custom xml.dom.minidom.Attr and "DOM Text nodes".
+
+Counting the Elements of an XML Document
+==========================================
+Using minidom
+===============
+As in the previous case, the minidom must be imported from the dom module. This module provides the function getElementsByTagName, which we'll use to find the tag item. Once obtained, we use the len() built-in method to obtain the number of sub-items connected to a node. The result obtained from the code below is shown in Figure 3.
+
+from xml.dom import minidom
+
+# parse an xml file by name
+mydoc = minidom.parse('items.xml')
+
+items = mydoc.getElementsByTagName('item')
+
+# total amount of items
+print(len(items))  
+$ python counterxmldom.py
+2  
+
+
+Using ElementTree
+==================
+Similarly, the ElementTree module allows us to calculate the amount of nodes connected to a node.
+
+Example code:
+
+import xml.etree.ElementTree as ET  
+tree = ET.parse('items.xml')  
+root = tree.getroot()
+
+# total amount of items
+print(len(root[0]))  
+The result is as follows:
+
+$ python counterxml.py
+2  
+Figure 4
+
+Writing XML Documents
+========================
+Using ElementTree
+====================
+ElementTree is also great for writing data to XML files. The code below shows how to create an XML file with the same structure as the file we used in the previous examples.
+
+The steps are:
+
+Create an element, which will act as our root element. In our case the tag for this element is "data".
+Once we have our root element, we can create sub-elements by using the SubElement function. This function has the syntax:
+
+SubElement(parent, tag, attrib={}, **extra)
+
+Here parent is the parent node to connect to, attrib is a dictionary containing the element attributes, and extra are additional keyword arguments. This function returns an element to us, which can be used to attach other sub-elements, as we do in the following lines by passing items to the SubElement constructor.
+
+Although we can add our attributes with the SubElement function, we can also use the set() function, as we do in the following code. The element text is created with the text property of the Element object.
+
+In the last 3 lines of the code below we create a string out of the XML tree, and we write that data to a file we open.
+
+Example code:
+===============
+import xml.etree.ElementTree as ET
+
+# create the file structure
+data = ET.Element('data')  
+items = ET.SubElement(data, 'items')  
+item1 = ET.SubElement(items, 'item')  
+item2 = ET.SubElement(items, 'item')  
+item1.set('name','item1')  
+item2.set('name','item2')  
+item1.text = 'item1abc'  
+item2.text = 'item2abc'
+
+# create a new XML file with the results
+mydata = ET.tostring(data)  
+myfile = open("items2.xml", "w")  
+myfile.write(mydata)  
+
+
+Executing this code will result in a new file, "items2.xml", which should be equivalent to the original "items.xml" file, at least in terms of the XML data structure. You'll probably notice that it the resulting string is only one line and contains no indentation, however.
+
+Finding XML Elements
+====================
+Using ElementTree
+==================
+The ElementTree module offers the findall() function, which helps us in finding specific items in the tree. It returns all items with the specified condition. In addition, the module has the function find(), which returns only the first sub-element that matches the specified criteria. The syntax for both of these functions are as follows:
+
+findall(match, namespaces=None)  
+
+
+
+find(match, namespaces=None)  
+For both of these functions the match parameter can be an XML tag name or a path. The function findall() returns a list of elements, and find returns a single object of type Element.
+
+In addition, there is another helper function that returns the text of the first node that matches the given criterion:
+
+findtext(match, default=None, namespaces=None)  
+Here is some example code to show you exactly how these functions operate:
+
+import xml.etree.ElementTree as ET  
+tree = ET.parse('items.xml')  
+root = tree.getroot()
+
+# find the first 'item' object
+for elem in root:  
+    print(elem.find('item').get('name'))
+
+# find all "item" objects and print their "name" attribute
+for elem in root:  
+    for subelem in elem.findall('item'):
+
+        # if we don't need to know the name of the attribute(s), get the dict
+        print(subelem.attrib)      
+
+        # if we know the name of the attribute, access it directly
+        print(subelem.get('name'))
+And here is the reuslt of running this code:
+
+$ python findtree.py 
+item1  
+{'name': 'item1'}
+item1  
+{'name': 'item2'}
+item2  
+Figure 5
+
+Modifying XML Elements
+Using ElementTree
+The ElementTree module presents several tools for modifying existing XML documents. The example below shows how to change the name of a node, change the name of an attribute and modify its value, and how to add an extra attribute to an element.
+
+A node text can be changed by specifying the new value in the text field of the node object. The attribute's name can be redefined by using the set(name, value) function. The set function doesn't have to just work on an existing attribute, it can also be used to define a new attribute.
+
+The code below shows how to perform these operations:
+
+import xml.etree.ElementTree as ET
+
+tree = ET.parse('items.xml')  
+root = tree.getroot()
+
+# changing a field text
+for elem in root.iter('item'):  
+    elem.text = 'new text'
+
+# modifying an attribute
+for elem in root.iter('item'):  
+    elem.set('name', 'newitem')
+
+# adding an attribute
+for elem in root.iter('item'):  
+    elem.set('name2', 'newitem2')
+
+tree.write('newitems.xml')  
+After running the code, the resulting XML file "newitems.xml" will have an XML tree with the following data:
+
+<data>  
+    <items>
+        <item name="newitem" name2="newitem2">new text</item>
+        <item name="newitem" name2="newitem2">new text</item>
+    </items>
+</data>  
+As we can see when comparing with the original XML file, the names of the item elements have changed to "newitem", the text to "new text", and the attribute "name2" has been added to both nodes.
+
+You may also notice that writing XML data in this way (calling tree.write with a file name) adds some more formatting to the XML tree so it contains newlines and indentation.
+
+
+

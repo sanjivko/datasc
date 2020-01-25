@@ -1,0 +1,204 @@
+Functions
+=========
+Functions are broadly classified into following
+
+1) Built in functions a.k.a ready to use functions
+
+2) User defined functions
+
+
+User defined functions
+==================
+This functions is also known as customized functions.  Cutomized means it is created based on the  client or user requirements to solve a particular problem.
+
+Syntax: to design a functions
+
+	def functionname( param1, param2,........):
+		statement1
+		statement2
+
+Note: After creating the function, we should also call the functions.
+
+Example:
+=========
+#python code to create a simple function
+
+def simple1():
+     print("Hi")
+     print("functions Demo")
+
+#call the function
+
+
+simple1()
+simple1()
+simple1()
+
+Note: The main advantage of functions is reusability, creating once and call many times.
+
+
+We can also create a function, by passing the parameters.
+------------------------------------------------------------------------
+#python code to understand how to pass parameters
+
+def adds(x,y):
+     return x+y
+
+def prods(a,b):
+     return a*b
+
+#calling the functions
+
+print("Total is: ",adds(120,2))
+
+print("Prod is: ",prods(120,3))
+
+
+In python we can also develop functions to return some values back, by using return keyword.
+
+#python code to design a function to perform input age validations
+
+def validateAge(age):              #formal parameter
+     if(age<18 and age>=1):
+          return "Minor"
+     elif(age>=18 and age<55):
+          return "Major"
+     else:
+          return "Senior Citizen"
+
+#calling the function
+print("Yout belong as : ", validateAge(63)) #actual parameter
+
+
+Python also supports default parameters
+================================
+example:
+========
+#python default parameters
+
+def f1(x,y=3,z=5):
+     return x+y+z
+
+#call the function
+print("total is: ",f1(1))  #here y and z values is taken as default
+
+print("total is: ",f1(1,5))  #here z value is taken as default
+
+
+print("total is: ",f1(3,4,7)) #here y,z default value is overwrite
+
+
+We can also call the functions with the parameter names
+-------------------------------------------------------------------------
+#python default parameters
+
+def f1(x,y=3,z=5):
+     return x+y+z
+
+#call the function
+print(f1(z=10,x=15,y=20))
+
+
+Python also supports recursive functions
+================================
+Recursions means calling a function within itself is known as recursions.
+
+Recursion function mainly avoids the use of loops 
+
+example:
+=======
+#python recursions
+
+def fact(n1):
+     if (n1==1):
+          return 1
+     else:
+          return fact(n1-1)*n1  #calling function within the function
+
+#call the function
+print("factorial is: ",fact(5))
+
+
+Nested functions
+===============
+Python also supports to define a function within the another functions, which is also known as nested functions.
+
+example:
+=========
+	def f1():
+	    code1
+	    ded f2():
+	       code2
+
+#python example to understand the nested functions
+
+def f1(msg):   #f1() is outer function
+     def f2():      #f2() is inner function
+          return "Welcome to "
+     return f2()+msg  #calling inner function
+
+#calling the f1() outer function
+print(f1("Python Developers"))
+
+
+Python decorator
+===============
+A decorator concept nothing but to attach funtion or process to some another function or process.
+
+Example:
+=========
+#python decorator Demo
+
+def f1(data):
+     data.idno=1
+     data.name="sachin"
+     data.score=90.34
+     return data
+
+@f1    #here we say this line is decorator attachement
+def adds(x,y):
+     return x+y
+
+#call the function
+print("sum is: ",adds(120,2))
+print(adds.idno)
+print(adds.name)
+print(adds.score)
+
+lambda expression in python
+==========================
+lambda expressions are short and easy , faster to execute expressions.
+
+lambda allows to design a unnamed or anonymous functions.
+
+syntax:
+	lambda args : expressions
+
+Example:
+-------------
+#python code to perform lambda operations
+
+#We can find the difference between normal and lambda
+
+def adds(x,y):
+     return x+y
+
+#call the function
+print("total: ",adds(120,20))
+
+#defining the lambda
+res=lambda a,b:a+b
+print("sum is: ",res(120,3))
+
+
+The effective use of lambda can be seen with map() , reduce() and filter functions
+=============================================================
+map() is a builtin function, which is used to map (the functions along with the data/values).
+
+Example:
+=======
+	map(func,data)
+A map will return a new list as the value
+
+
+   

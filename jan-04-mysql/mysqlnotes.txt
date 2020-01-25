@@ -1,0 +1,125 @@
+Mysql
+======
+Install MAMPP in mac OS.
+
+From MAMPP control panel start mysql, and open shell prompt.
+
+we should login here by giving
+
+#mysql -u root -p
+
+MariaDB[(none)]> 
+
+To create database
+-------------------------
+MariaDB [(none)]> create database db123;
+
+ MariaDB [(none)]> show databases;
+output
+=======
++--------------------+
+| Database           |
++--------------------+
+| db123              |
+| information_schema |
+| mydb1              |
+| mysql              |
+| performance_schema |
+| phpmyadmin         |
+| test               |
++--------------------+
+
+example to use database
+==============
+MariaDB [(none)]> use db123;
+Database changed
+output
+=====
+MariaDB [db123]> use db123;
+
+MariaDB [db123]> show tables;
+output
+======
+Empty set (0.00 sec)
+
+
+To connect mysql from python we need to install the following package called mysql-connector
+
+C:\Users\admin>python -m pip install mysql-connector
+
+Goto python shell and verify the mysql.connector package is installed or not
+========================================================
+example:
+======
+import mysql.connector
+
+
+After veriying the mysql connections
+
+We can develop the code to actually connect mysql and also create a table
+======================================================
+import mysql.connector
+from mysql.connector import connect
+
+#first i am connecting to the mysql database server
+connection = mysql.connector.connect(host='localhost',
+                             database='db123',
+                             user='root',
+                             password='')
+#opening the cursor
+cursor = connection.cursor()  #create cursor object to execute the sql queryies from python code
+#execute the queries
+cursor.execute("create table simple123(id int,name char(20))")
+cursor.close()
+connection.close()
+        
+
+Example to store or add/insert data within the table
+======================================
+#python code to store data within the database tables
+import mysql.connector
+from mysql.connector import connect
+
+#first i am connecting to the mysql database server
+connection = mysql.connector.connect(host='localhost',
+                             database='db123',
+                             user='root',
+                             password='')
+#opening the cursor
+cursor = connection.cursor()  #create cursor object to execute the sql queryies from python code
+
+#set the insert query
+idno=int(input("enter the idno"))
+name=input("enter the name")
+
+ins_query="insert into simple123 values('%s','%s')"%(idno,name)
+
+print(ins_query)
+cursor.execute(ins_query)
+
+connection.commit() #connection commit stores data within the database
+connection.close()
+
+
+
+#code to read data from the table
+--------------------------------------------------
+import mysql.connector
+from mysql.connector import connect
+
+#first i am connecting to the mysql database server
+connection = mysql.connector.connect(host='localhost',
+                             database='db123',
+                             user='root',
+                             password='')
+#opening the cursor
+cursor = connection.cursor()
+cursor.execute("select *from simple123")
+record = cursor.fetchall()
+print ("Your connected to - ", record)
+#rows wise accessing data
+for data in record:
+     print(data)
+cursor.close()
+connection.close()
+        

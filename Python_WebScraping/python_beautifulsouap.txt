@@ -1,0 +1,269 @@
+Getting Started
+==================
+We are going to use Python as our scraping language, together with a simple and powerful library, BeautifulSoup.
+
+
+Next we need to get the BeautifulSoup library using pip, a package management tool for Python.
+
+In the terminal, type:
+
+easy_install pip  
+pip install BeautifulSoup4
+
+
+
+The Basics
+===========
+Before we start jumping into the code, let’s understand the basics of HTML and some rules of scraping.
+
+HTML tags
+==========
+If you already understand HTML tags, feel free to skip this part.
+
+<!DOCTYPE html>  
+<html>  
+    <head>
+    </head>
+    <body>
+        <h1> First Scraping </h1>
+        <p> Hello World </p>
+    <body>
+</html>
+
+
+
+This is the basic syntax of an HTML webpage. Every <tag> serves a block inside the webpage:
+
+1. <!DOCTYPE html>: HTML documents must start with a type declaration.
+2. The HTML document is contained between <html> and </html>.
+3. The meta and script declaration of the HTML document is between <head> and </head>.
+4. The visible part of the HTML document is between <body> and </body> tags.
+5. Title headings are defined with the <h1> through <h6> tags.
+6. Paragraphs are defined with the <p> tag.
+
+Other useful tags include <a> for hyperlinks, <table> for tables, <tr> for table rows, and <td> for table columns.
+
+Also, HTML tags sometimes come with id or class attributes. The id attribute specifies a unique id for an HTML tag and the value must be unique within the HTML document. The class attribute is used to define equal styles for HTML tags with the same class. We can make use of these ids and classes to help us locate the data we want.
+
+
+
+Scraping Rules
+
+You should check a website’s Terms and Conditions before you scrape it. Be careful to read the statements about legal use of data. Usually, the data you scrape should not be used for commercial purposes.
+
+Do not request data from the website too aggressively with your program (also known as spamming), as this may break the website. Make sure your program behaves in a reasonable manner (i.e. acts like a human). One request for one webpage per second is good practice.
+
+The layout of a website may change from time to time, so make sure to revisit the site and rewrite your code as needed
+
+
+
+Jump into the Code
+====================
+Now that we know where our data is, we can start coding our web scraper. Open your text editor now!
+
+First, we need to import all the libraries that we are going to use.
+---------------------------------------------------------------------
+import requests
+from bs4 import BeautifulSoup
+
+# Collect and parse first page
+page = requests.get('https://web.archive.org/web/20121007172955/https://www.nga.gov/collection/anZ1.htm')
+soup = BeautifulSoup(page.text, 'html.parser')
+
+# Pull all text from the BodyText div
+artist_name_list = soup.find(class_='BodyText')
+
+# Pull text from all instances of <a> tag within BodyText div
+artist_name_list_items = artist_name_list.find_all('a')
+artist_name_list = soup.find(class_='BodyText')
+artist_name_list_items = artist_name_list.find_all('a')
+
+# Create for loop to print out all artists' names
+for artist_name in artist_name_list_items:
+    print(artist_name.prettify())
+
+
+
+Pulling the Contents from a Tag
+=====================================
+
+In order to access only the actual artists’ names, we’ll want to target the contents of the <a> tags rather than print out the entire link tag.
+
+We can do this with Beautiful Soup’s .contents, which will return the tag’s children as a Python list data type.
+
+Let’s revise the for loop so that instead of printing the entire link and its tag, we’ll print the list of children (i.e. the artists’ full names):
+
+import requests
+from bs4 import BeautifulSoup
+
+page = requests.get('https://web.archive.org/web/20121007172955/https://www.nga.gov/collection/anZ1.htm')
+
+soup = BeautifulSoup(page.text, 'html.parser')
+
+last_links = soup.find(class_='AlphaNav')
+last_links.decompose()
+
+artist_name_list = soup.find(class_='BodyText')
+artist_name_list_items = artist_name_list.find_all('a')
+
+# Use .contents to pull out the <a> tag’s children
+for artist_name in artist_name_list_items:
+    names = artist_name.contents[0]
+    print(names)
+
+Export to Excel CSV
+=======================
+Now that we have the data, it is time to save it. The Excel Comma Separated Format is a nice choice. It can be opened in Excel so you can see the data and process it easily.
+
+But first, we have to import the Python csv module and the datetime module to get the record date. Insert these lines to your code in the import section.
+
+import csv
+from datetime import datetime
+
+At the bottom of your code, add the code for writing data to a csv file.
+
+Writing the Data to a CSV File
+=================================
+Collecting data that only lives in a terminal window is not very useful. Comma-separated values (CSV) files allow us to store tabular data in plain text, and is a common format for spreadsheets and databases. 
+
+
+First, we need to import Python’s built-in csv module along with the other modules at the top of the Python programming file:
+
+import csv
+
+
+Next, we’ll create and open a file called z-artist-names.csv for us to write to (we’ll use the variable f for file here) by using the 'w' mode. 
+
+We’ll also write the top row headings: Name and Link which we’ll pass to the writerow() method as a list:
+
+f = csv.writer(open('z-artist-names.csv', 'w'))
+f.writerow(['Name', 'Link'])
+
+
+Finally, within our for loop, we’ll write each row with the artists’ names and their associated links:
+
+f.writerow([names, links])
+
+	
+
+import requests
+import csv
+from bs4 import BeautifulSoup
+
+
+page = requests.get('https://web.archive.org/web/20121007172955/http://www.nga.gov/collection/anZ1.htm')
+
+soup = BeautifulSoup(page.text, 'html.parser')
+
+last_links = soup.find(class_='AlphaNav')
+last_links.decompose()
+
+# Create a file to write to, add headers row
+f = csv.writer(open('z-artist-names.csv', 'w'))
+f.writerow(['Name', 'Link'])
+
+artist_name_list = soup.find(class_='BodyText')
+artist_name_list_items = artist_name_list.find_all('a')
+
+for artist_name in artist_name_list_items:
+    names = artist_name.contents[0]
+    links = 'https://web.archive.org' + artist_name.get('href')
+
+
+    # Add each artist’s name and associated link to a row
+    f.writerow([names, links])
+
+
+Retrieving Related Pages
+============================
+We have created a program that will pull data from the first page of the list of artists whose last names start with the letter Z. However, there are 4 pages in total of these artists available on the website.
+
+In order to collect all of these pages, we can perform more iterations with for loops. This will revise most of the code we have written so far, but will employ similar concepts.
+
+To start, we’ll want to initialize a list to hold the pages:
+
+pages = []
+We will populate this initialized list with the following for loop:
+
+for i in range(1, 5):
+    url = 'https://web.archive.org/web/20121007172955/https://www.nga.gov/collection/anZ' + str(i) + '.htm'
+    pages.append(url)
+
+
+
+we noted that we should pay attention to the total number of pages there are that contain artists’ names starting with the letter Z (or whatever letter we’re using). Since there are 4 pages for the letter Z, we constructed the for loop above with a range of 1 to 5 so that it will iterate through each of the 4 pages.
+
+For this specific web site, the URLs begin with the string https://web.archive.org/web/20121007172955/https://www.nga.gov/collection/anZ and then are followed with a number for the page (which will be the integer i from the for loop that we convert to a string) and end with .htm. We will concatenate these strings together and then append the result to the pages list.
+
+In addition to this loop, we’ll have a second loop that will go through each of the pages above. The code in this for loop will look similar to the code we have created so far, as it is doing the task we completed for the first page of the letter Z artists for each of the 4 pages total. Note that because we have put the original program into the second for loop, we now have the original loop as a nested for loop contained in it.
+
+The two for loops will look like this:
+
+
+pages = []
+
+for i in range(1, 5):
+    url = 'https://web.archive.org/web/20121007172955/https://www.nga.gov/collection/anZ' + str(i) + '.htm'
+    pages.append(url)
+
+for item in pages:
+    page = requests.get(item)
+    soup = BeautifulSoup(page.text, 'html.parser')
+
+    last_links = soup.find(class_='AlphaNav')
+    last_links.decompose()
+
+    artist_name_list = soup.find(class_='BodyText')
+    artist_name_list_items = artist_name_list.find_all('a')
+
+    for artist_name in artist_name_list_items:
+        names = artist_name.contents[0]
+        links = 'https://web.archive.org' + artist_name.get('href')
+
+        f.writerow([names, links])
+
+
+In the code above, you should see that the first for loop is iterating over the pages and the second for loop is scraping data from each of those pages and then is adding the artists’ names and links line by line through each row of each page.
+
+These two for loops come below the import statements, the CSV file creation and writer (with the line for writing the headers of the file), and the initialization of the pages variable (assigned to a list).
+
+Within the greater context of the programming file, the complete code looks like this:
+
+
+import requests
+import csv
+from bs4 import BeautifulSoup
+
+
+f = csv.writer(open('z-artist-names.csv', 'w'))
+f.writerow(['Name', 'Link'])
+
+pages = []
+
+for i in range(1, 5):
+    url = 'https://web.archive.org/web/20121007172955/https://www.nga.gov/collection/anZ' + str(i) + '.htm'
+    pages.append(url)
+
+
+for item in pages:
+    page = requests.get(item)
+    soup = BeautifulSoup(page.text, 'html.parser')
+
+    last_links = soup.find(class_='AlphaNav')
+    last_links.decompose()
+
+    artist_name_list = soup.find(class_='BodyText')
+    artist_name_list_items = artist_name_list.find_all('a')
+
+    for artist_name in artist_name_list_items:
+        names = artist_name.contents[0]
+        links = 'https://web.archive.org' + artist_name.get('href')
+
+        f.writerow([names, links])
+
+
+
+Since this program is doing a bit of work, it will take a little while to create the CSV file. Once it is done, the output will be complete, showing the artists’ names and their associated links from Zabaglia, Niccola to Zykmund, Václav.
+
+
+

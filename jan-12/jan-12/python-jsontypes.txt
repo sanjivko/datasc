@@ -1,0 +1,31 @@
+
+#python code to convert into dictionary into a json
+import json
+books={
+     "name":"xml bible",
+     "price":450,
+     "publisher":"Wrox"
+     }
+
+json_obj=json.dumps(books)
+print(json_obj)
+
+
+We can also convert the following python objects into json strings
+
+a) dict b)list c)tuple d)string e)int f) float g) True h) False i) None
+
+
+When we convert from python to json, python objects are converted into the
+JSON equivalent
+
+Python					JSON
+------					-------
+dict					Object
+list					Array
+tuple					Array
+str					String
+int					Number
+float					Number
+True					true
+False					false

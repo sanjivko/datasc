@@ -1,0 +1,177 @@
+Json ( Java script object notations)
+=============================
+Json is mainly used to organize the data with keys and values.
+
+Json files are created as intermediate file, to store data which can be used in any os and web servers.
+
+json files are light weight files.  It can store larger datas.
+
+json syntax
+=========
+		{
+		   'books'
+			{
+			   'bookid':'b001',
+	 		   'bookname':'xml bible'			
+			}
+		}
+data within the json is store with .json extensions.
+
+
+Data Structures
+================
+Integers
+char
+string
+float
+boolean
+datetime
+
+
+different storages 
+datetime
+char and string
+
+JSON and XML 
+==============
+Both JSON file formats and the XML file formats are used to store and  organize data for data transmissions between the client and server.
+
+Both are OS, application and Browser independent
+
+JSON
+=======
+JSON (Javscript Object Notation)
+
+Data within the JSON is stored in the form of key's and values.
+Data can be stored in various strucutres again within the JSON file.
+
+
+
+JSON is a text-based data exchange format derived from JavaScript that is used in web services and other connected applications. 
+
+The following sections provide an introduction to JSON syntax, an overview of JSON uses, and a description of the most common approaches to generate and parse JSON.
+
+
+Introduction to JSON
+-------------------------------
+JSON is a text-based data exchange format derived from JavaScript that is used in web services and other connected applications. 
+
+The following sections provide an introduction to JSON syntax, an overview of JSON uses, and a description of the most common approaches to generate and parse JSON.
+
+The following topics are addressed here:
+
+JSON Syntax
+============
+Uses of JSON
+
+Generating and Parsing JSON Data
+
+JSON Syntax
+=============
+JSON defines only two data structures: objects and arrays. An object is a set of name-value pairs, and an array is a list of values. 
+
+JSON defines seven value types: string, number, object, array, true, false, and null.
+
+The following example shows JSON data for a sample object that contains name-value pairs. The value for the name "phoneNumbers" is an array whose elements are two objects.
+
+{
+   "firstName": "Duke",
+   "lastName": "Java",
+   "age": 18,
+   "streetAddress": "100 Internet Dr",
+   "city": "JavaTown",
+   "state": "JA",
+   "postalCode": "12345",
+   "phoneNumbers": [
+      { "Mobile": "111-111-1111" },
+      { "Home": "222-222-2222" }
+   ]
+}
+JSON has the following syntax.
+
+Objects are enclosed in braces ({}), their name-value pairs are separated by a comma (,), and the name and value in a pair are separated by a colon (:). 
+
+Names in an object are strings, whereas values may be of any of the seven value types, including another object or an array.
+
+Arrays are enclosed in brackets ([]), and their values are separated by a comma (,). Each value in an array may be of a different type, including another array or an object.
+
+When objects and arrays contain other objects or arrays, the data has a tree-like structure.
+
+Uses of JSON
+==============
+JSON is often used as a common format to serialize and deserialize data in applications that communicate with each other over the Internet. 
+
+These applications are created using different programming languages and run in very different environments. 
+
+JSON is suited to this scenario because it is an open standard, it is easy to read and write, and it is more compact than other representations.
+
+RESTful web services use JSON extensively as the format for the data inside requests and responses. 
+
+The HTTP header used to indicate that the content of a request or a response is JSON data is
+
+Content-Type: application/json
+--------------------------------
+JSON representations are usually more compact than XML representations because JSON does not have closing tags. 
+
+Unlike XML, JSON does not have a widely accepted schema for defining and validating the structure of JSON data.
+
+Json in python
+===============
+Python has a built in  library / package called json. Which can be used to workk with 
+the json data
+
+example:
+	import json
+
+Parse JSON - concver from JSON to Python
+
+If you have a json string, you can parse it by using the  json.loads() function.
+
+	example:
+		 import json as js
+		  js.loads()
+
+Python script to convert the Json to python
+=====================================
+#python code to convert the json to python
+import json
+
+#cr
+mydata1='{  "name":"Sachin","age":43,"city":"mumbai","email":"sachin@gmail"}'
+
+#then parse the json data object mydata1
+
+pydata = json.loads(mydata1)
+
+#the the pydata is python dictionary
+print(pydata)
+
+#access the individual data
+print(pydata["age"])
+
+
+
+example : Python code to read the file from json  and convert into python object(dict)
+========================================================================================
+#python code to convert the json to python
+import json
+
+
+fobj=open("myinfo.json","r") # Open the jsonfile 
+jsondata=fobj.read()     #extracting the jsonfile contents
+pydata = json.loads(jsondata) #parse and conver it into python dictionary
+
+#the the pydata is python dictionary
+print(pydata)
+#access the individual data
+print(pydata["age"])
+print(pydata["state"])
+print(pydata['city'])
+
+print("Full Details\n")
+for k,v in pydata.items():
+     print(k, ":" , v)
+
+
+Converting the python dictionary object into json
+===================================================
