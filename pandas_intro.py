@@ -26,9 +26,22 @@ pd.Series(5.1, index=range(10))
 
 df = pd.DataFrame(data)
 
-df.head()
-df.tail(2)
+
+df = df[['name', 'username', 'email']]
+
+
+df1 = df.head()
+df2 = df.tail()
+
+pd.merge(df1, df2, on='name', how = 'inner')  
+
+df2.columns = ['ss', 'df','fgf]
+
+
+pd.concat([df1, df2])
 
 
 
 
+import sklearn.
+df1.set_index()

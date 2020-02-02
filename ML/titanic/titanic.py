@@ -19,32 +19,61 @@ def print_full(x):
     
 import pandas as pd
 import seaborn as sns
-
+import matplotlib.pyplot as plt
 
 import os
 os.chdir("C:\\Users\\ojhas\\Documents\\PythonTrishna\\ML\\titanic")
-os.listdir()
+print (os.listdir())
 
-pd.set_option('display.max_columns', None)  
 train = pd.read_csv("train.csv")
+test = pd.read_csv("test.csv")
+
+
+
+train.head()
+
+
+test.head()
+
+train.shape
+
+ 
+
 train.describe()
 
+train.dtypes
 
-#Fillup 
-train['Age'].fillna(train['Age'].median(), inplace=True)
-train['Sex'] = train['Sex'].map({'female':0, 'male':1})
-fig , ax= plt.subplots(1,1,figsize=(18,6))
-train['Age'].unique()
-sns.factorplot(x='Sex', y='Survived', data=train, kind='bar')
 
-sns.heatmap(train.corr(), annot=True)
+list(train.columns)
+'''
+['PassengerId',
+ 'Survived',
+ 'Pclass',
+ 'Name',
+ 'Sex',
+ 'Age',
+ 'SibSp',
+ 'Parch',
+ 'Ticket',
+ 'Fare',
+ 'Cabin',
+ 'Embarked']
+'''
+sns.countplot(y="Survived", data=train)
 
-x_features = list(train.columns)
-x_features.remove('Survived')
+train.Survived.value_counts()
+sns.distplot(train.Pclass)
 
-train[x_features]
 
-from sklearn.naive_bayes import GaussianNB
+train.Sex.value_counts()
+
+train.Sex.isna().value_counts()
+
+sns.factorplot("Sex", "Survived", data=train, kind="bar")
+
+
+
+
 
 
 

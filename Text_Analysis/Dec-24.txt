@@ -1,0 +1,53 @@
+#Text Analysis, performing 
+Demo word frequency
+================
+#example performing word frequency count using for loop
+
+>>> text = "This is my test text. We're keeping this text short to keep things manageable."
+>>> text=text.lower()
+>>> from collections import Counter
+>>> def count_words(text):                   #counts word frequency
+	skips = [".", ", ", ":", ";", "'", '"']
+	for ch in skips:
+		text = text.replace(ch, "")
+	word_counts = {}
+	for word in text.split(" "):
+		if word in word_counts:
+			word_counts[word]+= 1
+		else:
+			word_counts[word]= 1
+	return word_counts
+
+>>> count_words(text)
+{'this': 2, 'is': 1, 'my': 1, 'test': 1, 'text': 2, 'were': 1, 'keeping': 1, 'short': 1, 'to': 1, 'keep': 1, 'things': 1, 'manageable': 1}
+
+
+#example to perform word frequency by using collections modules Counter method.
+
+>>> def count_words_fast(text):      #counts word frequency using Counter from collections
+
+	text = text.lower()
+	skips = [".", ", ", ":", ";", "'", '"']
+	for ch in skips:
+		text = text.replace(ch, "")
+	word_counts = Counter(text.split(" "))
+	return word_counts
+
+>>> count_words_fast(text) #You can check the function
+Counter({'this': 2, 'text': 2, 'is': 1, 'my': 1, 'test': 1, 'were': 1, 'keeping': 1, 'short': 1, 'to': 1, 'keep': 1, 'things': 1, 'manageable': 1})
+
+
+Text Analysis Demo on Total Unique words: 
+================================
+>>> text = "This is my test text. We're keeping this text short to keep things manageable."
+>>> text=text.lower()
+
+>>> def word_stats(word_counts):
+	word_counts = count_words_fast(text)
+	num_unique = len(word_counts)
+	counts = word_counts.values()
+	return (num_unique, counts)
+
+>>> word_stats("this")
+(12, dict_values([2, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1]))
+
